@@ -7,9 +7,10 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.sites.shortcuts import get_current_site
+
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
@@ -33,20 +34,31 @@ def register_view(request):
         user.is_active = False
         user.save()
 
-        site = get_current_site(request)
+        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        activation_url = request.build_absolute_uri(
+            reverse("activate", args=[uidb64, token])
+        )
+
         html_message = render_to_string(
-            "planner/email/confirm_email.html",
+               "planner/email/confirm_email.html",
             {
                 "user": user,
-                "domain": site.domain,
-                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                "token": default_token_generator.make_token(user),
+                "activation_url": activation_url,
+            }
+        )
+
+        text_message = render_to_string(
+            "planner/email/confirm_email.txt",
+            {
+                "user": user,
+                "activation_url": activation_url
             }
         )
 
         email = EmailMultiAlternatives(
             subject="🌸 Confirmă contul tău",
-            body=html_message,
+            body=text_message,
             to=[user.email],
         )
         email.attach_alternative(html_message, "text/html")
@@ -310,7 +322,7 @@ def update_day_text(request):
             id=request.POST.get("day_id"),
             user=request.user
         )
-        day.text = request.POST.get("text")
+        day.notes = request.POST.get("notes")
         day.save()
     return redirect("today")
 
@@ -402,7 +414,7 @@ def monthly_overview_view(request):
 def mood_chart_view(request):
     days = Day.objects.filter(user=request.user).order_by("date")
 
-    return render(request, "planner/charts/mood.html", {
+    return render(request, "planner/chart/mood.html", {
         "days": days
     })
 
@@ -418,6 +430,6 @@ def productivity_chart_view(request):
             "completed": d.time_blocks.filter(completed=True).count()
         })
 
-    return render(request, "planner/charts/productivity.html", {
+    return render(request, "planner/chart/productivity.html", {
         "data": data
     })
