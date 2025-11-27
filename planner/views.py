@@ -35,7 +35,7 @@ def register_view(request):
 
         site = get_current_site(request)
         html_message = render_to_string(
-            "planner/emails/confirm_email.html",
+            "planner/email/confirm_email.html",
             {
                 "user": user,
                 "domain": site.domain,
@@ -70,9 +70,9 @@ def activate_account(request, uidb64, token):
 
         UserProfile.objects.get_or_create(user=user)
 
-        return render(request, "planner/auth/confirm_success.html")
+        return render(request, "planner/auth/email_confirm_success.html")
 
-    return render(request, "planner/auth/confirm_invalid.html")
+    return render(request, "planner/auth/email_confirm_invalid.html")
 
 
 def login_view(request):
