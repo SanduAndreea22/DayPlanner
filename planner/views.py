@@ -1,28 +1,27 @@
 from datetime import date, timedelta
 from calendar import monthrange
-
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Count, Q
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.urls import reverse
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.tokens import default_token_generator
-
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
 from .models import Day, TimeBlock, Quote, EveningReflection, UserProfile
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMultiAlternatives
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 from .forms import RegisterForm
-
 
 # ===================================================
 # 🔐 AUTH
 # ===================================================
-
 def register_view(request):
     if request.user.is_authenticated:
         return redirect("today")
@@ -36,29 +35,31 @@ def register_view(request):
 
         uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-        activation_url = request.build_absolute_uri(
-            reverse("activate", args=[uidb64, token])
-        )
 
-        html_message = render_to_string(
-               "planner/email/confirm_email.html",
-            {
-                "user": user,
-                "activation_url": activation_url,
-            }
+        activation_link = request.build_absolute_uri(
+            reverse("activate", args=[uidb64, token])
         )
 
         text_message = render_to_string(
             "planner/email/confirm_email.txt",
             {
                 "user": user,
-                "activation_url": activation_url
+                "activation_link": activation_link,
+            }
+        )
+
+        html_message = render_to_string(
+            "planner/email/confirm_email.html",
+            {
+                "user": user,
+                "activation_link": activation_link,
             }
         )
 
         email = EmailMultiAlternatives(
             subject="🌸 Confirmă contul tău",
             body=text_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             to=[user.email],
         )
         email.attach_alternative(html_message, "text/html")
@@ -67,6 +68,7 @@ def register_view(request):
         return render(request, "planner/auth/check_email.html")
 
     return render(request, "planner/auth/register.html", {"form": form})
+
 
 
 def activate_account(request, uidb64, token):
