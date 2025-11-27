@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}🌸 Creează cont · Emotional Planner{% endblock %}
+
+{% block content %}
+<div class="card auth-card">
+    <h2 class="title-gradient auth-title">🌸 Creează cont</h2>
+
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="button primary auth-button">
+            Creează cont
+        </button>
+    </form>
+
+    <p class="muted auth-footer">
+        Ai deja cont?
+        <a href="{% url 'login' %}"><strong>Autentifică-te</strong></a>
+    </p>
+</div>
+{% endblock %}
+

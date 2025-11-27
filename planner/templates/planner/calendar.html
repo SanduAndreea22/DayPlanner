@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}📅 Calendar · Emotional Planner{% endblock %}
+
+{% block content %}
+<div class="card calendar-card">
+
+    <div class="calendar-title title-gradient">
+        {{ month }} / {{ year }}
+    </div>
+
+    <div class="calendar-grid">
+        {% for item in days %}
+            {% if item.day %}
+                <a
+                    href="{% url 'day_detail' item.date.year item.date.month item.date.day %}"
+                    class="calendar-day {% if item.day.color %}color-{{ item.day.color }}{% endif %}"
+                >
+                    <div class="day-number">
+                        {{ item.date.day }}
+                    </div>
+
+                    {% if item.day.mood %}
+                        <div class="day-mood">
+                            {% if item.day.mood == "very_bad" %}😞
+                            {% elif item.day.mood == "bad" %}😕
+                            {% elif item.day.mood == "neutral" %}😐
+                            {% elif item.day.mood == "good" %}🙂
+                            {% elif item.day.mood == "very_good" %}😄
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </a>
+            {% else %}
+                <div class="calendar-day empty">
+                    <div class="day-number muted">
+                        {{ item.date.day }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="calendar-actions">
+        <a href="{% url 'monthly_overview' %}" class="button">
+            📊 Overview emoțional
+        </a>
+
+        <a href="{% url 'today' %}" class="button secondary">
+            ← Înapoi la ziua mea
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+

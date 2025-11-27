@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}💗 Scorul săptămânii · Emotional Planner{% endblock %}
+
+{% block content %}
+<div class="card weekly-card">
+
+    <!-- 🌸 TITLU -->
+    <div class="weekly-title title-gradient">
+        💗 Săptămâna ta
+    </div>
+
+    <div class="weekly-subtitle muted">
+        Un scor blând de echilibru, nu o evaluare.
+    </div>
+
+    <!-- ⭐ SCOR -->
+    <div class="weekly-score-circle">
+        <div class="weekly-score-value">
+            {{ score }}
+        </div>
+        <div class="weekly-score-max muted">
+            / 100
+        </div>
+    </div>
+
+    <!-- 💬 MESAJ -->
+    <div class="weekly-message">
+        {{ message }}
+    </div>
+
+    <!-- 📊 DETALII -->
+    <div class="weekly-details">
+
+        <div class="detail-card card">
+            🌿<br>
+            <strong>{{ days_logged }}</strong><br>
+            <span class="muted">Zile notate</span>
+        </div>
+
+        <div class="detail-card card highlight">
+            ✅<br>
+            <strong>{{ completed_tasks }}</strong><br>
+            <span class="muted">Task-uri finalizate</span>
+        </div>
+
+        <div class="detail-card card">
+            💭<br>
+            <strong>{{ mood_days }}</strong><br>
+            <span class="muted">Zile cu stare notată</span>
+        </div>
+
+    </div>
+
+    <!-- 📈 CHART ACTIONS -->
+    <div class="weekly-actions">
+        <a href="{% url 'mood_chart' %}" class="button">
+            📈 Starea lunii
+        </a>
+
+        <a href="{% url 'productivity_chart' %}" class="button">
+            ✅ Productivitate & stare
+        </a>
+    </div>
+
+    <!-- 🔙 NAV -->
+    <div class="weekly-nav">
+        <a href="{% url 'calendar' %}" class="button secondary">
+            📅 Calendar
+        </a>
+
+        <a href="{% url 'today' %}" class="button primary">
+            🌱 Azi
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+
+

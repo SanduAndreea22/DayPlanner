@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}📊 Starea zilelor · Emotional Planner{% endblock %}
+
+{% block content %}
+<div class="card chart-card">
+
+    <div class="chart-title title-gradient">
+        📊 Starea emoțională
+    </div>
+
+    <p class="muted">
+        Observare blândă, nu judecată.
+    </p>
+
+    <!-- LISTĂ ZILE -->
+    <div class="chart-list">
+        {% if days %}
+            {% for day in days %}
+                <div class="chart-row">
+
+                    <span class="chart-date">
+                        {{ day.date|date:"d M" }}
+                    </span>
+
+                    <span class="chart-mood">
+                        {% if day.mood == "very_bad" %}😞 Foarte greu
+                        {% elif day.mood == "bad" %}😕 Greu
+                        {% elif day.mood == "neutral" %}😐 Neutru
+                        {% elif day.mood == "good" %}🙂 Bine
+                        {% elif day.mood == "very_good" %}😄 Foarte bine
+                        {% else %}—
+                        {% endif %}
+                    </span>
+
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="muted">
+                Nu există încă date emoționale.
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- ACȚIUNI -->
+    <div class="chart-actions">
+        <a href="{% url 'monthly_overview' %}" class="button">
+            ← Înapoi la overview
+        </a>
+
+        <a href="{% url 'calendar' %}" class="button primary">
+            📅 Calendar
+        </a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}🌙 Reflecție de seară · Emotional Planner{% endblock %}
+
+{% block content %}
+<div class="card evening-card">
+
+    <!-- Titlu -->
+    <div class="evening-title title-gradient">
+        🌙 Reflecție de seară
+    </div>
+
+    <!-- Data -->
+    <div class="evening-date muted">
+        {{ reflection.day.date|date:"l, d F Y" }}
+    </div>
+
+    <!-- Intro -->
+    <div class="evening-intro">
+        Închidem ziua blând. Fără analiză, fără presiune.
+    </div>
+
+    <form method="post" class="evening-form">
+        {% csrf_token %}
+
+        <!-- 🔋 Drain -->
+        <div class="evening-section">
+            <label>🔋 Ce mi-a consumat energia azi?</label>
+            <textarea
+                name="drain"
+                rows="3"
+                placeholder="Orice, chiar și ceva mic…"
+            >{{ reflection.drain }}</textarea>
+        </div>
+
+        <!-- 🌸 Small win -->
+        <div class="evening-section">
+            <label>🌸 Un lucru mic pentru care mă pot aprecia azi</label>
+            <textarea
+                name="small_win"
+                rows="3"
+                placeholder="Un gest, un gând, o pauză…"
+            >{{ reflection.small_win }}</textarea>
+        </div>
+
+        <!-- Acțiuni -->
+        <div class="evening-actions">
+            <button type="submit" class="button primary">
+                Închid ziua 🌙
+            </button>
+
+            <a href="{% url 'today' %}" class="button">
+                Înapoi la azi
+            </a>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
+

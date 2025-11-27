@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}👤 Profil · Emotional Planner{% endblock %}
+
+{% block content %}
+<div class="card profile-card">
+    <h2 class="title-gradient profile-title">👤 Profilul meu</h2>
+
+    <form method="post" class="profile-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Cum vrei să te strig?</label>
+            <input
+                type="text"
+                name="nickname"
+                value="{{ profile.nickname }}"
+                placeholder="ex: Lu, Andi, eu 🌱"
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Câteva cuvinte despre tine</label>
+            <textarea
+                name="bio"
+                rows="4"
+                placeholder="Cum te simți în perioada asta, ce e important pentru tine..."
+            >{{ profile.bio }}</textarea>
+        </div>
+
+        <button type="submit" class="button primary profile-button">
+            Salvează
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}✅ Productivitate & stare · Emotional Planner{% endblock %}
+
+{% block content %}
+<div class="card chart-card">
+
+    <div class="chart-title title-gradient">
+        ✅ Productivitate & stare
+    </div>
+
+    <p class="muted">
+        Câte lucruri ai reușit să duci la capăt, indiferent de cum te-ai simțit.
+    </p>
+
+    <!-- LISTĂ PRODUCTIVITATE -->
+    <div class="chart-list">
+        {% if data %}
+            {% for item in data %}
+                <div class="chart-row">
+
+                    <span class="chart-date">
+                        {{ item.date|date:"d M" }}
+                    </span>
+
+                    <span class="chart-value">
+                        {{ item.completed }} task{{ item.completed|pluralize }}
+                    </span>
+
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="muted">
+                Nu există încă date de productivitate.
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- ACȚIUNI -->
+    <div class="chart-actions">
+        <a href="{% url 'weekly_score' %}" class="button">
+            ← Scor săptămânal
+        </a>
+
+        <a href="{% url 'calendar' %}" class="button primary">
+            📅 Calendar
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+
+
+

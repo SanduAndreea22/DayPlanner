@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}📊 Overview emoțional · Emotional Planner{% endblock %}
+
+{% block content %}
+<div class="card overview-card">
+
+    <div class="overview-title title-gradient">
+        📊 {{ month }} / {{ year }}
+    </div>
+
+    <div class="overview-subtitle muted">
+        Overview emoțional al lunii
+    </div>
+
+    <!-- LISTĂ ZILE -->
+    <div class="overview-days">
+        {% if days %}
+            {% for day in days %}
+                <div class="overview-day">
+
+                    <span class="day-date">
+                        {{ day.date|date:"d" }}
+                    </span>
+
+                    <span class="day-mood">
+                        {% if day.mood == "very_bad" %}😞 Foarte greu
+                        {% elif day.mood == "bad" %}😕 Greu
+                        {% elif day.mood == "neutral" %}😐 Neutru
+                        {% elif day.mood == "good" %}🙂 Bine
+                        {% elif day.mood == "very_good" %}😄 Foarte bine
+                        {% else %}—
+                        {% endif %}
+                    </span>
+
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="muted">
+                Nu există încă zile notate în această lună.
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- MESAJ BLÂND -->
+    <div class="overview-note">
+        Ai fost prezentă în <strong>{{ days|length }}</strong> zile luna aceasta.<br>
+        Nu este un verdict. Este doar o oglindă blândă.
+    </div>
+
+    <!-- ACȚIUNI -->
+    <div class="overview-actions">
+        <a href="{% url 'calendar' %}" class="button">
+            ← Înapoi la calendar
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+
+
