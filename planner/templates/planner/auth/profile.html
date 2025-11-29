@@ -3,33 +3,70 @@
 
 {% block content %}
 <div class="card profile-card">
-    <h2 class="title-gradient profile-title">👤 Profilul meu</h2>
 
+    <!-- TITLU -->
+    <h2 class="title-gradient profile-title">
+        👤 Profilul meu
+    </h2>
+
+    <p class="muted profile-subtitle">
+        Spațiul tău personal. Poți reveni oricând.
+    </p>
+
+    <!-- ✅ CONFIRMARE SALVARE -->
+    {% if saved %}
+        <div class="message profile-message">
+            💗 Profilul tău a fost salvat.
+        </div>
+    {% endif %}
+
+    <!-- FORM -->
     <form method="post" class="profile-form">
         {% csrf_token %}
 
+        <!-- NICKNAME -->
         <div class="form-group">
-            <label>Cum vrei să te strig?</label>
+            <label for="nickname">
+                Cum vrei să te strig?
+            </label>
             <input
                 type="text"
+                id="nickname"
                 name="nickname"
                 value="{{ profile.nickname }}"
                 placeholder="ex: Lu, Andi, eu 🌱"
+                class="profile-input"
             >
+            <small class="form-hint">
+                Acest nume apare în aplicație.
+            </small>
         </div>
 
+        <!-- BIO -->
         <div class="form-group">
-            <label>Câteva cuvinte despre tine</label>
+            <label for="bio">
+                Câteva cuvinte despre tine
+            </label>
             <textarea
+                id="bio"
                 name="bio"
                 rows="4"
+                class="profile-textarea"
                 placeholder="Cum te simți în perioada asta, ce e important pentru tine..."
             >{{ profile.bio }}</textarea>
         </div>
 
-        <button type="submit" class="button primary profile-button">
-            Salvează
-        </button>
+        <!-- ACTIONS -->
+        <div class="profile-actions">
+            <button type="submit" class="button primary profile-button">
+                Salvează 💾
+            </button>
+
+            <a href="{% url 'today' %}" class="button">
+                ← Înapoi
+            </a>
+        </div>
     </form>
+
 </div>
 {% endblock %}

@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, timezone
 from calendar import monthrange
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
@@ -17,10 +17,29 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMultiAlternatives
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from .forms import RegisterForm, EmailAuthenticationForm
+from django.utils import timezone
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+
 from .forms import RegisterForm
+from .models import UserProfile
+
 
 # ===================================================
-# 🔐 AUTH
+# 🔐 REGISTER
 # ===================================================
 def register_view(request):
     if request.user.is_authenticated:
@@ -70,7 +89,9 @@ def register_view(request):
     return render(request, "planner/auth/register.html", {"form": form})
 
 
-
+# ===================================================
+# ✅ ACTIVATE ACCOUNT
+# ===================================================
 def activate_account(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -89,11 +110,14 @@ def activate_account(request, uidb64, token):
     return render(request, "planner/auth/email_confirm_invalid.html")
 
 
+# ===================================================
+# 🔑 LOGIN
+# ===================================================
 def login_view(request):
     if request.user.is_authenticated:
         return redirect("today")
 
-    form = AuthenticationForm(request, data=request.POST or None)
+    form = EmailAuthenticationForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
         login(request, form.get_user())
@@ -102,22 +126,31 @@ def login_view(request):
     return render(request, "planner/auth/login.html", {"form": form})
 
 
+# ===================================================
+# 🚪 LOGOUT
+# ===================================================
 def logout_view(request):
     logout(request)
     return redirect("home")
 
 
+
+from .forms import ProfileForm
+
 @login_required
 def profile_view(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
+    saved = False
     if request.method == "POST":
         profile.nickname = request.POST.get("nickname")
         profile.bio = request.POST.get("bio")
         profile.save()
+        saved = True
 
     return render(request, "planner/auth/profile.html", {
-        "profile": profile
+        "profile": profile,
+        "saved": saved
     })
 
 
@@ -203,19 +236,46 @@ def today_view(request):
     })
 
 
+from datetime import date as date_cls
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from .models import Day
+
+
+
 @login_required
 def day_detail_view(request, year, month, day):
-    selected = date(year, month, day)
-    day_obj, _ = Day.objects.get_or_create(
+    selected_date = date_cls(year, month, day)
+
+    day_obj, created = Day.objects.get_or_create(
         user=request.user,
-        date=selected
+        date=selected_date
     )
+
+    message = None
+    if created:
+        if selected_date == date_cls.today():
+            message = "Aceasta este azi. Fără presiune. 🌿"
+        elif selected_date < date_cls.today():
+            message = "Zi din trecut. Poți reflecta în ritmul tău. 🤍"
+        else:
+            message = "Zi din viitor. Nu trebuie încă să fie clară. ✨"
+
+    reflection = EveningReflection.objects.filter(day=day_obj).first()
 
     return render(request, "planner/day.html", {
         "day": day_obj,
-        "time_blocks": day_obj.time_blocks.all(),
+        "time_blocks": day_obj.time_blocks.order_by("start_time"),
         "limit": max_tasks_for_day(day_obj),
+        "message": message,
+        "reflection": reflection,
+
+        # ✅ ASTA LIPSEA
+        "quote": day_obj.closing_quote,
     })
+
+
+
 
 
 # ===================================================
@@ -260,7 +320,12 @@ def add_timeblock(request):
                 end_time=request.POST.get("end_time"),
             )
 
-    return redirect("today")
+    return redirect(
+        "day_detail",
+        year=day.date.year,
+        month=day.date.month,
+        day=day.date.day
+    )
 
 
 @login_required
@@ -270,20 +335,19 @@ def toggle_timeblock(request, block_id):
         id=block_id,
         day__user=request.user
     )
+
     block.completed = not block.completed
-    block.save()
-    return redirect("today")
+    block.save(update_fields=["completed"])
 
+    day = block.day
 
-@login_required
-def delete_timeblock(request, block_id):
-    block = get_object_or_404(
-        TimeBlock,
-        id=block_id,
-        day__user=request.user
+    # ✅ rămâi pe ACEEAȘI zi
+    return redirect(
+        "day_detail",
+        year=day.date.year,
+        month=day.date.month,
+        day=day.date.day
     )
-    block.delete()
-    return redirect("today")
 
 
 # ===================================================
@@ -298,9 +362,17 @@ def set_day_color(request):
             id=request.POST.get("day_id"),
             user=request.user
         )
-        day.color = request.POST.get("color")
-        day.save()
-    return redirect("today")
+
+        if not day.is_closed:
+            day.color = request.POST.get("color")
+            day.save(update_fields=["color"])
+
+        return redirect(
+            "day_detail",
+            year=day.date.year,
+            month=day.date.month,
+            day=day.date.day
+        )
 
 
 @login_required
@@ -311,9 +383,34 @@ def set_day_mood(request):
             id=request.POST.get("day_id"),
             user=request.user
         )
-        day.mood = request.POST.get("mood")
-        day.save()
-    return redirect("today")
+
+        if not day.is_closed:
+            day.mood = request.POST.get("mood")
+            day.save(update_fields=["mood"])
+
+        return redirect(
+            "day_detail",
+            year=day.date.year,
+            month=day.date.month,
+            day=day.date.day
+        )
+@login_required
+def delete_timeblock(request, block_id):
+    block = get_object_or_404(
+        TimeBlock,
+        id=block_id,
+        day__user=request.user
+    )
+
+    day = block.day   # ✅ FOARTE IMPORTANT
+    block.delete()
+
+    return redirect(
+        "day_detail",
+        year=day.date.year,
+        month=day.date.month,
+        day=day.date.day
+    )
 
 
 @login_required
@@ -324,33 +421,73 @@ def update_day_text(request):
             id=request.POST.get("day_id"),
             user=request.user
         )
-        day.notes = request.POST.get("notes")
-        day.save()
-    return redirect("today")
+
+        if not day.is_closed:
+            day.notes = request.POST.get("notes")
+            day.save(update_fields=["notes"])
+
+        return redirect(
+            "day_detail",
+            year=day.date.year,
+            month=day.date.month,
+            day=day.date.day
+        )
 
 
 # ===================================================
 # 🌙 EVENING REFLECTION
 # ===================================================
+from django.utils import timezone
+from random import choice
 
 @login_required
-def evening_reflection_view(request):
-    day = get_object_or_404(
+def evening_reflection_view(request, year, month, day):
+    selected_date = date_cls(year, month, day)
+
+    day_obj = get_object_or_404(
         Day,
         user=request.user,
-        date=date.today()
+        date=selected_date
     )
-    reflection, _ = EveningReflection.objects.get_or_create(day=day)
+
+    reflection, _ = EveningReflection.objects.get_or_create(day=day_obj)
 
     if request.method == "POST":
         reflection.drain = request.POST.get("drain")
         reflection.small_win = request.POST.get("small_win")
         reflection.save()
-        return redirect("today")
+
+        # ✅ alegem citatul DOAR O DATĂ
+        if not day_obj.closing_quote:
+            quotes = Quote.objects.filter(active=True)
+
+            # 🔹 opțional: dacă vrei după mood
+            if day_obj.mood:
+                mood_quotes = quotes.filter(mood=day_obj.mood)
+                if mood_quotes.exists():
+                    quotes = mood_quotes
+
+            if quotes.exists():
+                day_obj.closing_quote = choice(list(quotes))
+
+        # ✅ închidem ziua
+        day_obj.is_closed = True
+        day_obj.closed_at = timezone.now()
+        day_obj.save(update_fields=["is_closed", "closed_at", "closing_quote"])
+
+        return redirect(
+            "day_detail",
+            year=year,
+            month=month,
+            day=day
+        )
 
     return render(request, "planner/evening.html", {
+        "day": day_obj,
         "reflection": reflection
     })
+
+
 
 
 # ===================================================

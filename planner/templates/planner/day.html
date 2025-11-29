@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}🌿 Ziua mea · Emotional Planner{% endblock %}
 
@@ -10,107 +11,137 @@
         {{ day.date|date:"l, d F Y" }}
     </div>
 
-    <!-- 🌱 MESAJ BLÂND -->
     {% if message %}
-        <div class="message">
-            {{ message }}
-        </div>
+        <div class="message">{{ message }}</div>
     {% endif %}
 
-    <!-- 🎨 ENERGIA ZILEI -->
-    <form method="post" action="{% url 'set_day_color' %}" class="day-section">
-        {% csrf_token %}
-        <input type="hidden" name="day_id" value="{{ day.id }}">
+    <!-- ================= ZONA PRINCIPALĂ ================= -->
 
-        <label>🎨 Energia zilei</label>
-        <select name="color" onchange="this.form.submit()">
-            <option value="">—</option>
-            <option value="green" {% if day.color == "green" %}selected{% endif %}>🟢 Verde</option>
-            <option value="yellow" {% if day.color == "yellow" %}selected{% endif %}>🟡 Galben</option>
-            <option value="red" {% if day.color == "red" %}selected{% endif %}>🔴 Roșu</option>
-            <option value="blue" {% if day.color == "blue" %}selected{% endif %}>🔵 Albastru</option>
-            <option value="purple" {% if day.color == "purple" %}selected{% endif %}>🟣 Mov</option>
-        </select>
-    </form>
+    {% if day.is_closed %}
 
-    <!-- 💭 STAREA ZILEI -->
-    <form method="post" action="{% url 'set_day_mood' %}" class="day-section">
-        {% csrf_token %}
-        <input type="hidden" name="day_id" value="{{ day.id }}">
+        <div class="message">
+            🌙 Ziua este închisă. Ai făcut suficient azi.
+        </div>
 
-        <label>💭 Cum mă simt azi</label>
-        <select name="mood" onchange="this.form.submit()">
-            <option value="">—</option>
-            <option value="very_bad" {% if day.mood == "very_bad" %}selected{% endif %}>😞 Foarte greu</option>
-            <option value="bad" {% if day.mood == "bad" %}selected{% endif %}>😕 Greu</option>
-            <option value="neutral" {% if day.mood == "neutral" %}selected{% endif %}>😐 Neutru</option>
-            <option value="good" {% if day.mood == "good" %}selected{% endif %}>🙂 Bine</option>
-            <option value="very_good" {% if day.mood == "very_good" %}selected{% endif %}>😄 Foarte bine</option>
-        </select>
-    </form>
+        {% include "planner/partials/day_summary.html" %}
 
-    <!-- ✨ JURNAL ZI (CORECT) -->
-    <form method="post" action="{% url 'update_day_text' %}" class="day-section">
-        {% csrf_token %}
-        <input type="hidden" name="day_id" value="{{ day.id }}">
-
-        <label>✨ Un gând important azi</label>
-        <textarea
-            name="notes"
-            rows="4"
-            placeholder="Ce e important pentru tine azi, ce simți, ce vrei să ții minte..."
-        >{{ day.notes }}</textarea>
-
-        <button type="submit" class="button primary day-save">
-            Salvează
-        </button>
-    </form>
-
-    <!-- ➕ ADAUGĂ INTERVAL -->
-    <div class="day-section">
-        <h3>➕ Interval nou</h3>
-
-        <form method="post" action="{% url 'add_timeblock' %}">
-            {% csrf_token %}
-            <input type="hidden" name="day_id" value="{{ day.id }}">
-
-            <div class="time-row">
-                <input type="time" name="start_time" required>
-                <span>–</span>
-                <input type="time" name="end_time" required>
+        <!-- 🌙 CITAT FINAL (NU SE SCHIMBĂ LA REFRESH) -->
+        {% if quote %}
+            <div class="gentle-recommendation">
+                <span class="emoji">🌙</span>
+                <span class="text">
+                    {{ quote.text }}
+                </span>
             </div>
+        {% endif %}
 
-            <input type="text" name="title" placeholder="Ce faci" required>
+    {% else %}
 
-            <button type="submit" class="button">
-                Adaugă
-            </button>
-        </form>
-    </div>
+        <!-- 🎨 ENERGIE -->
+        <div class="day-section">
+            <label>🎨 Energia zilei</label>
 
-    <!-- ⏰ ORAR -->
+            {% if day.color %}
+                <div class="closed-box" data-energy="{{ day.color }}">
+                    {{ day.get_color_display }}
+                </div>
+            {% else %}
+                <form method="post" action="{% url 'set_day_color' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="day_id" value="{{ day.id }}">
+                    <select name="color" onchange="this.form.submit()">
+                        <option value="">—</option>
+                        <option value="red">🔴 Scăzută</option>
+                        <option value="yellow">🟡 Medie</option>
+                        <option value="green">🟢 Bună</option>
+                        <option value="blue">🔵 Calmă</option>
+                        <option value="purple">🟣 Creativă</option>
+                    </select>
+                </form>
+            {% endif %}
+        </div>
+
+        <!-- 💭 STARE -->
+        <div class="day-section">
+            <label>💭 Cum mă simt azi</label>
+
+            {% if day.mood %}
+                <div class="closed-box" data-mood="{{ day.mood }}">
+                    {{ day.get_mood_display }}
+                </div>
+            {% else %}
+                <form method="post" action="{% url 'set_day_mood' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="day_id" value="{{ day.id }}">
+                    <select name="mood" onchange="this.form.submit()">
+                        <option value="">—</option>
+                        <option value="very_bad">😞 Foarte greu</option>
+                        <option value="bad">😕 Greu</option>
+                        <option value="neutral">😐 Neutru</option>
+                        <option value="good">🙂 Bine</option>
+                        <option value="very_good">😄 Foarte bine</option>
+                    </select>
+                </form>
+            {% endif %}
+        </div>
+
+        <!-- ✨ GÂND -->
+        <div class="day-section">
+            <label>✨ Un gând important azi</label>
+
+            {% if day.notes %}
+                <div class="closed-box">
+                    {{ day.notes|linebreaks }}
+                </div>
+            {% else %}
+                <form method="post" action="{% url 'update_day_text' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="day_id" value="{{ day.id }}">
+                    <textarea name="notes" rows="4"
+                        placeholder="Ce e important pentru tine azi..."
+                    ></textarea>
+                    <button type="submit" class="button primary">
+                        Salvează
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+
+        <!-- 🌙 ÎNCHIDE ZIUA -->
+        <div class="day-evening">
+            <a href="{% url 'evening_reflection' day.date.year day.date.month day.date.day %}"
+               class="button primary">
+               🌙 Închide ziua cu blândețe
+            </a>
+        </div>
+
+    {% endif %}
+
+    <!-- ================= ⏰ ORAR ================= -->
+
     <div class="day-section">
         <h3>⏰ Orarul zilei</h3>
 
         {% if time_blocks %}
             {% for block in time_blocks %}
-                <div class="time-block">
+                <div class="time-block {% if block.completed %}done{% endif %}">
                     <div class="time">
                         {{ block.start_time|time:"H:i" }} – {{ block.end_time|time:"H:i" }}
                     </div>
 
-                    <div class="block-title {% if block.completed %}completed{% endif %}">
+                    <div class="block-title">
                         {{ block.title }}
                     </div>
 
-                    <div class="actions">
-                        <a href="{% url 'toggle_timeblock' block.id %}">
-                            {% if block.completed %}✅{% else %}⬜{% endif %}
-                        </a>
-                        <a href="{% url 'delete_timeblock' block.id %}">
-                            ❌
-                        </a>
-                    </div>
+                    {% if not day.is_closed %}
+                        <div class="actions">
+                            {% if not block.completed %}
+                                <a href="{% url 'toggle_timeblock' block.id %}">⬜</a>
+                            {% else %}
+                                ✅
+                            {% endif %}
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         {% else %}
@@ -118,14 +149,25 @@
         {% endif %}
     </div>
 
-    <!-- 🌙 REFLECȚIE DE SEARĂ -->
-    <div class="day-evening">
-        <a href="{% url 'evening_reflection' %}" class="button primary">
-            🌙 Închide ziua cu blândețe
-        </a>
-    </div>
+    <!-- ➕ ADAUGĂ INTERVAL -->
+    {% if not day.is_closed %}
+        <div class="day-section">
+            <h3>➕ Interval nou</h3>
+            <form method="post" action="{% url 'add_timeblock' %}">
+                {% csrf_token %}
+                <input type="hidden" name="day_id" value="{{ day.id }}">
+                <div class="time-row">
+                    <input type="time" name="start_time" required>
+                    <span>–</span>
+                    <input type="time" name="end_time" required>
+                </div>
+                <input type="text" name="title" placeholder="Ce faci" required>
+                <button type="submit" class="button">Adaugă</button>
+            </form>
+        </div>
+    {% endif %}
 
-    <!-- 🔙 -->
+    <!-- 🔙 BACK -->
     <div class="day-back">
         <a href="{% url 'calendar' %}" class="muted">
             ← Înapoi la calendar
@@ -134,7 +176,3 @@
 
 </div>
 {% endblock %}
-
-
-
-

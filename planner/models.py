@@ -2,11 +2,19 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 
+
+
 # ===================================================
 # 👤 PROFIL UTILIZATOR
 # ===================================================
 
 class UserProfile(models.Model):
+    PRONOUN_CHOICES = [
+        ("ea", "ea / ei"),
+        ("el", "el / lui"),
+        ("they", "they"),
+    ]
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -16,13 +24,41 @@ class UserProfile(models.Model):
     nickname = models.CharField(max_length=50, blank=True)
     bio = models.TextField(blank=True)
 
+    pronoun = models.CharField(
+        max_length=10,
+        choices=PRONOUN_CHOICES,
+        blank=True
+    )
+
+    evening_reminder_time = models.TimeField(
+        null=True,
+        blank=True
+    )
+
     def __str__(self):
-        return self.user.username
+        return self.nickname or self.user.email
+
 
 
 # ===================================================
 # 🗓 ZIUA
 # ===================================================
+
+class Quote(models.Model):
+    text = models.TextField()
+
+    # asociat unui mood (OPȚIONAL)
+    mood = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.text[:60]
+
 
 class Day(models.Model):
     user = models.ForeignKey(
@@ -32,6 +68,19 @@ class Day(models.Model):
     )
 
     date = models.DateField()
+
+    # ✅ STARE ZI
+    is_closed = models.BooleanField(default=False)
+    closed_at = models.DateTimeField(null=True, blank=True)
+
+    # 🌙 Citat final (salvat la închiderea zilei)
+    closing_quote = models.ForeignKey(
+        Quote,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="days"
+    )
 
     class Mood(models.TextChoices):
         VERY_BAD = 'very_bad', '😞 Foarte greu'
@@ -163,19 +212,6 @@ class EveningReflection(models.Model):
 # 💬 CITAT
 # ===================================================
 
-class Quote(models.Model):
-    text = models.TextField()
 
-    # asociat unui mood (OPȚIONAL)
-    mood = models.CharField(
-        max_length=20,
-        blank=True,
-        null=True
-    )
-
-    active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.text[:60]
 
 

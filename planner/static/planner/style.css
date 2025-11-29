@@ -1,0 +1,950 @@
+/* ======================================================
+   🎨 ROOT — BLEU NEUTRAL (UNISEX)
+====================================================== */
+:root {
+  --primary: #6fa3c1;
+  --secondary: #8fa4b5;
+
+  --surface: rgba(255,255,255,0.88);
+  --glass: rgba(255,255,255,0.75);
+
+  --text-main: #2f3c45;
+  --text-muted: #7a8790;
+
+  --radius-lg: 28px;
+  --radius-md: 16px;
+
+  --shadow-main: 0 28px 56px rgba(0,0,0,0.12);
+}
+
+/* ======================================================
+   RESET / BASE
+====================================================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--text-main);
+
+  background:
+    radial-gradient(900px 500px at 20% 20%, rgba(111,163,193,0.28), transparent 60%),
+    radial-gradient(900px 520px at 80% 30%, rgba(143,164,181,0.25), transparent 60%),
+    linear-gradient(135deg, #f3f7fa, #edf3f7);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ======================================================
+   LAYOUT
+====================================================== */
+header {
+  padding: 26px 36px;
+}
+
+nav {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu a {
+  margin-left: 22px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  padding: 48px 20px;
+}
+
+/* ======================================================
+   CARD & BUTTONS
+====================================================== */
+.card {
+  width: 100%;
+  max-width: 720px;
+  padding: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-main);
+}
+
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: 150px;
+  padding: 13px 26px;
+  border-radius: 999px;
+
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  background: rgba(255,255,255,0.9);
+  color: var(--text-main);
+
+  box-shadow: 0 10px 24px rgba(0,0,0,0.14);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.button.primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.18);
+}
+
+/* ======================================================
+   TITLES
+====================================================== */
+.title-gradient {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+}
+
+/* ======================================================
+   DAY PAGE
+====================================================== */
+.day-card {
+  max-width: 760px;
+}
+
+.day-date {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 28px;
+}
+
+.message {
+  margin: 20px auto 36px;
+  padding: 18px 22px;
+  text-align: center;
+
+  background: rgba(240,245,248,0.9);
+  border-radius: var(--radius-md);
+}
+
+.day-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.day-section label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.day-card input,
+.day-card textarea,
+.day-card select {
+  width: 100%;
+  padding: 12px 16px;
+
+  border-radius: var(--radius-md);
+  border: none;
+
+  background: rgba(245,248,252,0.95);
+  font-size: 0.95rem;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(185,200,215,0.45),
+    0 6px 18px rgba(0,0,0,0.10);
+}
+
+.day-card textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+/* ======================================================
+   TIME BLOCKS
+====================================================== */
+.time-row {
+  display: flex;
+  gap: 10px;
+}
+
+.time-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(245,248,250,0.95);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.10);
+}
+
+.time {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  min-width: 90px;
+}
+
+.block-title {
+  flex: 1;
+}
+
+.time-block.done .block-title {
+  text-decoration: none;
+  opacity: 0.75;
+}
+
+/* ======================================================
+   AUTH (LOGIN / REGISTER / EMAIL)
+====================================================== */
+.auth-card {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 44px 36px;
+  text-align: center;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.9),
+    rgba(255,255,255,0.75)
+  );
+
+  border-radius: 28px;
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 28px 60px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.auth-form {
+  margin-top: 24px;
+  text-align: left;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: none;
+
+  background: rgba(245,248,250,0.95);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(200,210,220,0.45),
+    0 6px 16px rgba(0,0,0,0.08);
+}
+
+.auth-button {
+  width: 100%;
+  margin-top: 18px;
+}
+
+/* ======================================================
+   PROFILE
+====================================================== */
+.profile-card {
+  max-width: 620px;
+  margin: 40px auto;
+  padding: 42px 46px;
+  border-radius: 28px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.95),
+    rgba(255,255,255,0.85)
+  );
+
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 30px 60px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.profile-form input,
+.profile-form textarea {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: none;
+
+  background: rgba(245,248,250,0.95);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(200,210,220,0.45),
+    0 6px 18px rgba(0,0,0,0.08);
+}
+
+.profile-button {
+  align-self: center;
+  min-width: 160px;
+}
+
+/* ======================================================
+   RESPONSIVE
+====================================================== */
+@media (max-width: 600px) {
+  .card {
+    padding: 32px 24px;
+  }
+}
+
+.gentle-recommendation {
+  margin-top: 26px;
+  padding: 18px 22px;
+
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  background: rgba(240,245,248,0.9);
+  border-radius: 18px;
+
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
+
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+
+.gentle-recommendation .emoji {
+  font-size: 1.3rem;
+}
+
+/* ======================================================
+   📅 CALENDAR — BLEU GLASS FINAL
+====================================================== */
+
+.calendar-card {
+  max-width: 980px;
+  padding: 50px;
+}
+
+/* TITLU */
+.calendar-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 32px;
+}
+
+/* ZILE SĂPTĂMÂNĂ */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 14px;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* GRID */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 16px;
+}
+
+/* ZI */
+.calendar-day {
+  position: relative;
+  height: 120px;
+  padding: 14px;
+
+  border-radius: 22px;
+  background: rgba(255,255,255,0.92);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 14px 34px rgba(0,0,0,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+/* GLASS LAYER */
+.calendar-day::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.45),
+    rgba(255,255,255,0)
+  );
+  pointer-events: none;
+}
+
+/* HOVER */
+.calendar-day:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 26px 56px rgba(0,0,0,0.18);
+}
+
+/* ZI GOALĂ */
+.calendar-day.empty {
+  background: rgba(255,255,255,0.45);
+  box-shadow: none;
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* AZI */
+.calendar-day.today {
+  outline: 2px solid var(--primary);
+  box-shadow:
+    0 0 0 4px rgba(111,163,193,0.25),
+    0 26px 56px rgba(0,0,0,0.18);
+}
+
+/* NUMĂR ZI */
+.calendar-day .day-number {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5f7282;
+}
+
+/* MOOD */
+.calendar-day .day-mood {
+  align-self: flex-end;
+
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1.2rem;
+
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* ENERGII */
+.calendar-day.color-red {
+  background: linear-gradient(
+    180deg,
+    rgba(230,140,140,0.30),
+    rgba(255,255,255,0.92)
+  );
+}
+
+.calendar-day.color-yellow {
+  background: linear-gradient(
+    180deg,
+    rgba(245,210,120,0.30),
+    rgba(255,255,255,0.92)
+  );
+}
+
+.calendar-day.color-green {
+  background: linear-gradient(
+    180deg,
+    rgba(150,210,180,0.30),
+    rgba(255,255,255,0.92)
+  );
+}
+
+.calendar-day.color-blue {
+  background: linear-gradient(
+    180deg,
+    rgba(140,180,220,0.30),
+    rgba(255,255,255,0.92)
+  );
+}
+
+.calendar-day.color-purple {
+  background: linear-gradient(
+    180deg,
+    rgba(180,150,220,0.30),
+    rgba(255,255,255,0.92)
+  );
+}
+
+/* ACȚIUNI */
+.calendar-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 42px;
+  flex-wrap: wrap;
+}
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .calendar-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .calendar-day {
+    height: 100px;
+  }
+}
+
+/* ======================================================
+   🌸 FOOTER — Gentle reassurance
+====================================================== */
+
+footer {
+  margin-top: 80px;
+  padding-bottom: 60px;
+}
+
+.footer-cards {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.footer-card {
+  min-width: 180px;
+  max-width: 220px;
+
+  padding: 22px 26px;
+  border-radius: 22px;
+
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(14px);
+
+  box-shadow:
+    0 14px 32px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-main);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.footer-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 42px rgba(0,0,0,0.18);
+}
+
+/* emoji */
+.footer-card::first-line {
+  font-size: 1.4rem;
+}
+
+/* highlighted middle card */
+.footer-card.highlight {
+  background: linear-gradient(
+    135deg,
+    rgba(200,220,235,0.95),
+    rgba(230,240,248,0.95)
+  );
+}
+
+/* ======================================================
+   🌸 FOOTER — Gentle reassurance
+====================================================== */
+
+footer {
+  margin-top: 80px;
+  padding-bottom: 60px;
+}
+
+.footer-cards {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.footer-card {
+  min-width: 180px;
+  max-width: 220px;
+
+  padding: 22px 26px;
+  border-radius: 22px;
+
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(14px);
+
+  box-shadow:
+    0 14px 32px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-main);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.footer-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 42px rgba(0,0,0,0.18);
+}
+
+/* emoji */
+.footer-card::first-line {
+  font-size: 1.4rem;
+}
+
+/* highlighted middle card */
+.footer-card.highlight {
+  background: linear-gradient(
+    135deg,
+    rgba(200,220,235,0.95),
+    rgba(230,240,248,0.95)
+  );
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .footer-cards {
+    gap: 16px;
+  }
+
+  .footer-card {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* ======================================================
+   📊 CHART PAGES — STARE / PRODUCTIVITATE
+====================================================== */
+
+.chart-card {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 44px 42px;
+  border-radius: 30px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.95),
+    rgba(255,255,255,0.80)
+  );
+
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 32px 70px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+
+  text-align: center;
+}
+
+/* TITLU */
+.chart-title {
+  font-size: 1.55rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* SUBTITLU */
+.chart-card .muted {
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+}
+
+/* LISTĂ */
+.chart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+/* RÂND */
+.chart-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 16px 22px;
+  border-radius: 20px;
+
+  background: rgba(245,248,250,0.95);
+
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.55);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.chart-row:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.16);
+}
+
+/* DATA */
+.chart-date {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(50,70,85,0.75);
+}
+
+/* MOOD TEXT */
+.chart-mood {
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* PRODUCTIVITY VALUE */
+.chart-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* ACȚIUNI */
+.chart-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .chart-card {
+    padding: 32px 24px;
+  }
+
+  .chart-row {
+    padding: 14px 16px;
+  }
+
+  .chart-mood,
+  .chart-value {
+    font-size: 0.9rem;
+  }
+}
+
+/* ======================================================
+   📊 MONTHLY OVERVIEW — FINAL
+====================================================== */
+
+.overview-card {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 42px 40px;
+  border-radius: 28px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.95),
+    rgba(255,255,255,0.85)
+  );
+
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 30px 60px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* TITLU */
+.overview-title {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* SUBTITLU */
+.overview-subtitle {
+  text-align: center;
+  font-size: 0.85rem;
+  margin-bottom: 30px;
+  color: var(--text-muted);
+}
+
+/* LISTĂ ZILE */
+.overview-days {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ZI INDIVIDUALĂ */
+.overview-day {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  align-items: center;
+  gap: 16px;
+
+  padding: 14px 18px;
+  border-radius: 18px;
+
+  background: rgba(245,248,250,0.92);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.10);
+
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.overview-day:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.16);
+}
+
+/* DATA */
+.overview-day .day-date {
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #5a6f84;
+}
+
+/* STAREA */
+.overview-day .day-mood {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+/* MESAJ FINAL */
+.overview-note {
+  margin-top: 34px;
+  padding: 18px 22px;
+  text-align: center;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  background: rgba(240,245,248,0.9);
+  border-radius: 18px;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.45);
+}
+
+/* ACȚIUNI */
+.overview-actions {
+  margin-top: 34px;
+  text-align: center;
+}
+
+/* RESPONSIVE */
+@media (max-width: 520px) {
+  .overview-card {
+    padding: 32px 24px;
+  }
+
+  .overview-day {
+    grid-template-columns: 44px 1fr;
+  }
+}
+
+/* ===============================
+   🌙 CLOSING QUOTE (FINAL)
+================================ */
+
+.gentle-recommendation {
+  margin-top: 26px;
+  padding: 18px 22px;
+
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  background: rgba(240,245,248,0.9);
+  border-radius: 18px;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.45),
+    0 8px 22px rgba(0,0,0,0.08);
+
+  animation: fadeUpSoft 0.8s ease both;
+}
+
+.gentle-recommendation .emoji {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.gentle-recommendation .text {
+  color: #2f3e46;
+}
+
+/* subtle entrance */
+@keyframes fadeUpSoft {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+

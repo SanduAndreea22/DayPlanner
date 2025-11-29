@@ -5,9 +5,30 @@
 <div class="card auth-card">
     <h2 class="title-gradient auth-title">💗 Autentificare</h2>
 
+    {# ✅ ERORI VIZIBILE #}
+    {% if form.errors %}
+        <div class="auth-errors">
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <form method="post" class="auth-form">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        <p>
+            <label for="{{ form.email.id_for_label }}">Adresa de email</label>
+            {{ form.email }}
+        </p>
+
+        <p>
+            <label for="{{ form.password.id_for_label }}">Parolă</label>
+            {{ form.password }}
+        </p>
 
         <button type="submit" class="button primary auth-button">
             Intră
@@ -20,4 +41,5 @@
     </p>
 </div>
 {% endblock %}
+
 

@@ -5,25 +5,26 @@
 {% block content %}
 <div class="card evening-card">
 
-    <!-- Titlu -->
+    <!-- TITLU -->
     <div class="evening-title title-gradient">
         🌙 Reflecție de seară
     </div>
 
-    <!-- Data -->
+    <!-- DATA -->
     <div class="evening-date muted">
-        {{ reflection.day.date|date:"l, d F Y" }}
+        {{ day.date|date:"l, d F Y" }}
     </div>
 
-    <!-- Intro -->
+    <!-- INTRO -->
     <div class="evening-intro">
         Închidem ziua blând. Fără analiză, fără presiune.
     </div>
 
+    <!-- FORM -->
     <form method="post" class="evening-form">
         {% csrf_token %}
 
-        <!-- 🔋 Drain -->
+        <!-- 🔋 DRAIN -->
         <div class="evening-section">
             <label>🔋 Ce mi-a consumat energia azi?</label>
             <textarea
@@ -33,7 +34,7 @@
             >{{ reflection.drain }}</textarea>
         </div>
 
-        <!-- 🌸 Small win -->
+        <!-- 🌸 SMALL WIN -->
         <div class="evening-section">
             <label>🌸 Un lucru mic pentru care mă pot aprecia azi</label>
             <textarea
@@ -43,18 +44,23 @@
             >{{ reflection.small_win }}</textarea>
         </div>
 
-        <!-- Acțiuni -->
+        <!-- ACTIUNI -->
         <div class="evening-actions">
             <button type="submit" class="button primary">
                 Închid ziua 🌙
             </button>
 
-            <a href="{% url 'today' %}" class="button">
-                Înapoi la azi
+            <a href="{% url 'day_detail'
+                    day.date.year
+                    day.date.month
+                    day.date.day
+            %}" class="button">
+                Înapoi la zi
             </a>
         </div>
     </form>
 
 </div>
 {% endblock %}
+
 

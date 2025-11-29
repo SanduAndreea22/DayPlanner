@@ -108,7 +108,7 @@ USE_TZ = True
 # 📁 STATIC FILES
 # ====================================================
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = []
 
 # ====================================================
 # ✉️ EMAIL (DEV + PROD READY)
@@ -122,3 +122,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 #EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 #DEFAULT_FROM_EMAIL = "Emotional Planner <emotional.planner.app@gmail.com>"
+
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "today"
+LOGOUT_REDIRECT_URL = "home"

@@ -118,6 +118,12 @@ urlpatterns = [
         activate_account,
         name="activate"
     ),
+path(
+    "evening-reflection/<int:year>/<int:month>/<int:day>/",
+    evening_reflection_view,
+    name="evening_reflection"
+)
+
 ]
 
 

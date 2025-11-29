@@ -1,0 +1,53 @@
+<!-- ================== REZUMAT ZI ================== -->
+
+{% if day.color %}
+<div class="day-section">
+    <label>🎨 Energia zilei</label>
+    <div class="closed-box">
+        {{ day.get_color_display }}
+    </div>
+</div>
+{% endif %}
+
+{% if day.mood %}
+<div class="day-section">
+    <label>💭 Cum m-am simțit</label>
+    <div class="closed-box">
+        {{ day.get_mood_display }}
+    </div>
+</div>
+{% endif %}
+
+{% if day.notes %}
+<div class="day-section">
+    <label>✨ Un gând important</label>
+    <div class="closed-box">
+        {{ day.notes|linebreaks }}
+    </div>
+</div>
+{% endif %}
+
+<!-- ================== REFLECȚIE DE SEARĂ ================== -->
+
+{% if reflection %}
+
+    {% if reflection.drain %}
+    <div class="day-section">
+        <label>🔋 Ce mi-a consumat energia azi</label>
+        <div class="closed-box">
+            {{ reflection.drain|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if reflection.small_win %}
+    <div class="day-section">
+        <label>🌸 Un lucru mic pentru care mă pot aprecia</label>
+        <div class="closed-box">
+            {{ reflection.small_win|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+
+{% endif %}
+
